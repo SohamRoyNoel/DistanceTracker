@@ -4,21 +4,26 @@ const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
 
 // @desc    Accept default location by admin
-// @route   POST /api/v1/location/city/:city
+// @route   POST /api/v1/location/city/:city [DELHI, IN]
 // @access  Public
 exports.location = asyncHandler(async (req, res, next) => {
 
     const { city } = req.params;
-    const location = await geocoder.geocode(city);
-    console.log(JSON.stringify(location));
+    const geoLocation = await geocoder.geocode(city);
+    console.log(geoLocation[0].latitude);
 
-    // const location = await Location.create({
-        
-    // });
+    const cityLocation = {
+        type: 'Point',
+        coordinates: [geoLocation[0].longitude, geoLocation[0].latitude]
+    }
+    console.log(cityLocation);
+    await Location.create({
+        location: cityLocation
+    });
 
-    // res.status(201).json({
-    //     success: true
-    // })
+    res.status(201).json({
+        success: true
+    })
 });
 
 // @desc    Get distance by Co-ordinates
