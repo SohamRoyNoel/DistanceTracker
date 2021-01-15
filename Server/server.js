@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const connectDB = require('./db/db');
 const errorHandler = require("./middleware/error");
+const cors = require('cors');
 
 // File upload
 const fileUpload = require('express-fileupload');
@@ -26,14 +27,18 @@ connectDB();
 
 const app = express();
 
+// CORS 
+var corsOptions = {
+      origin: process.env.CORS,
+      optionsSuccessStatus: 200 // For legacy browser support
+};
+app.use(cors(corsOptions));
+
 // Handle cookie middleware
 app.use(cookieParser());
 
 // Body Parser : used to handel request from outside:: without this we will get undefined on console
 app.use(express.json());
-
-// Mount Middleware 
-//app.use(logger);
 
 // Dev logging Middleware
 if(process.env.NODE_ENV === 'developmemt'){

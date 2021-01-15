@@ -1,22 +1,45 @@
 import React from "react";
 import { Formik } from "formik";
+import apiDataReturner from "../loginQuery/login.axios";
+import Swal from 'sweetalert2';
 
 export default function LoginForm() {
   return (
     <div style={{ marginTop: '10%', marginLeft: '30%', marginRight: '30%' }} className="form-group container">
-    <p class="font-weight-bold" style={{ fontSize: 45 }}>LogIn</p>
+    <p className="font-weight-bold" style={{ fontSize: 45 }}>LogIn</p>
       <Formik
-        initialValues={{ firstName: "", lastName: "" }}
+        initialValues={{ email: "", password: "" }}
         validate={values => {
           const errors = {};
-          if (!values.firstName) {
-            errors.firstName = "Required";
+          if (!values.email) {
+            errors.email = "Required";
+            return errors;
           }
-          return errors;
+
+          if(!values.password) {
+            errors.password = "Required";
+            return errors;
+          }
+          
         }}
         onSubmit={(values, { setSubmitting }) => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
+           let body = {
+                "email": values.email,
+                "password": values.password
+            };
+            let data = apiDataReturner(body);
+            const promise = new Promise((resolve, reject) => { 
+                   resolve(data); 
+            }).then((value) => {
+                console.log(JSON.stringify(value));
+                if(value !== undefined && value.data.success === true){
+                    localStorage.setItem('_jid', value.data.token);
+                } else {
+                    Swal.fire('Oops...', 'Something went wrong!', 'error')
+                }
+            })
+
+
         }}
       >
         {({
@@ -29,32 +52,34 @@ export default function LoginForm() {
           isSubmitting
         }) => (
           <form onSubmit={handleSubmit}>
-            <label for="exampleInputEmail1">Email address</label>
+            <label>Email address</label>
             <input
               type="text"
-              name="firstName"
+              name="email"
               style={{ width: '50%' }}
               className="form-control"
               onChange={handleChange}
               onBlur={handleBlur}
-              value={values.firstName}
+              value={values.email}
+              required
             />
-            {errors.firstName && touched.firstName && errors.firstName}
+            {errors.email && touched.email && errors.email}
             <br />
             
             <br />
-            <label for="exampleInputPassword1">Password</label>
+            <label>Password</label>
             <input
               type="password"
-              name="lastName"
+              name="password"
               style={{ width: '50%' }}
               className="form-control"
               onChange={handleChange}
               onBlur={handleBlur}
-              value={values.lastName}
+              value={values.password}
+              required
             />
-            <br />
-            {errors.lastName && touched.lastName && errors.lastName}
+            {errors.password && touched.password && errors.password}
+            <br />            
             <br />
             <button type="submit" className="btn btn-secondary" disabled={isSubmitting}>
               Submit
