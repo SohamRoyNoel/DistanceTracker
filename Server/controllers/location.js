@@ -27,22 +27,22 @@ exports.location = asyncHandler(async (req, res, next) => {
 // @desc    Get distance by Co-ordinates by USER
 // @route   GET /api/v1/location/city/:city 
 // @access  Private
-exports.getBootcampsInRadious = asyncHandler(async (req, res, next) => {
-    const { zipcode, distance } = req.params;
+// exports.getBootcampsInRadious = asyncHandler(async (req, res, next) => {
+//     const { zipcode, distance } = req.params;
     
-    const loc = await geocoder.geocode(zipcode);   
-    const lat = loc[0].latitude;
-    const lng = loc[0].longitude;
+//     const loc = await geocoder.geocode(zipcode);   
+//     const lat = loc[0].latitude;
+//     const lng = loc[0].longitude;
 
-    // calculate radius 
-    const radius = distance / 6378; // Radius will be counted in KM
-    const bootcamps = await Bootcamp.find({
-          location: { $geoWithin: { $centerSphere: [ [ lng, lat ], radius ] } }
-    });
+//     // calculate radius 
+//     const radius = distance / 6378; // Radius will be counted in KM
+//     const bootcamps = await Bootcamp.find({
+//           location: { $geoWithin: { $centerSphere: [ [ lng, lat ], radius ] } }
+//     });
     
-    res.status(200).json({
-          success: true,
-          count: bootcamps.length,
-          data: bootcamps
-    })    
-})
+//     res.status(200).json({
+//           success: true,
+//           count: bootcamps.length,
+//           data: bootcamps
+//     })    
+// })
