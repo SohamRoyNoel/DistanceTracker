@@ -9,8 +9,10 @@ const LocationSchema = new mongoose.Schema({
         },
         coordinates: {
           type: [Number],
+          index: '2dsphere',
           required: true,
-          index: '2dsphere'
         }
       }
-  });
+});
+
+module.exports = mongoose.model('Location', LocationSchema);
