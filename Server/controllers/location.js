@@ -1,7 +1,7 @@
 const Location = require("../models/Location");
 const geocoder = require('../utils/geocoder');
 const asyncHandler = require("../middleware/async");
-const ErrorResponse = require("../utils/errorResponse");
+const geolib = require('geolib');
 
 // @desc    Accept default location by ADMIN
 // @route   POST /api/v1/location/city/:city [DELHI, IN]
@@ -10,7 +10,6 @@ exports.location = asyncHandler(async (req, res, next) => {
 
     const { city } = req.params;
     const geoLocation = await geocoder.geocode(city);
-    console.log(geoLocation[0].latitude);
 
     const cityLocation = {
         type: 'Point',
@@ -27,22 +26,28 @@ exports.location = asyncHandler(async (req, res, next) => {
 // @desc    Get distance by Co-ordinates by USER
 // @route   GET /api/v1/location/city/:city 
 // @access  Private
-// exports.getBootcampsInRadious = asyncHandler(async (req, res, next) => {
-//     const { zipcode, distance } = req.params;
+exports.getConfirmationIfInRadius = asyncHandler(async (req, res, next) => {
+    const { city } = req.params;
     
-//     const loc = await geocoder.geocode(zipcode);   
-//     const lat = loc[0].latitude;
-//     const lng = loc[0].longitude;
+    // User's Location
+    const geoLocation = await geocoder.geocode(city);  
+    const receivedLat = geoLocation[0].latitude;
+    const receivedLng = geoLocation[0].longitude;
 
-//     // calculate radius 
-//     const radius = distance / 6378; // Radius will be counted in KM
-//     const bootcamps = await Bootcamp.find({
-//           location: { $geoWithin: { $centerSphere: [ [ lng, lat ], radius ] } }
-//     });
+    // Default Location
+    const defaultLocation = await Location.findOne();
+    const defaultLat = defaultLocation.location.coordinates[1];
+    const defaultLng = defaultLocation.location.coordinates[0];
+
+    // Calculate Distance
+    const distance = geolib.getPreciseDistance(
+        {latitude: receivedLat, longitude: receivedLng},
+        {latitude: defaultLat, longitude: defaultLng},
+        1
+    )/ 1000 < 100 ? 'Yes' : 'No';
     
-//     res.status(200).json({
-//           success: true,
-//           count: bootcamps.length,
-//           data: bootcamps
-//     })    
-// })
+    res.status(200).json({
+          success: true,
+          distance: distance
+    })    
+})
