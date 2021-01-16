@@ -1,5 +1,8 @@
-function Admin() {
-    return <h1>Hello, Admin</h1>;
-}
+import React from 'react';
+import AdminForm from './adminComponent/adminForm';
 
-export default Admin;
+export default function Admin() {
+  return (
+    <AdminForm />
+  );
+}

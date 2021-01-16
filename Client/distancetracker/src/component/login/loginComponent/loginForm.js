@@ -48,8 +48,6 @@ export default function LoginForm() {
                     Swal.fire('Oops...', 'Something went wrong!', 'error')
                 }
             })
-
-
         }}
       >
         {({
