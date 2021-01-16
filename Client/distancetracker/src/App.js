@@ -11,9 +11,9 @@ function App() {
     <>
       <Switch>
         <Route path="/login" component={Login} exact />
-
         <AdminRoute path="/admin" Component={Admin} />
         <UserRoute path="/user" Component={User} />
+        <UserRoute path="*" Component={Login} />
       </Switch>
     </>
   );
