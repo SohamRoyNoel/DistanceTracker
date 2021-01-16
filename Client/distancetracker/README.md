@@ -13,4 +13,4 @@ admin@gmail.com | 123456 | Admin
 user@gmail.com  | 123456 | User
 
 ## Note:
-Seed the db before login; instruction is on Server's README
+Seed the db before login; instruction is on Server's [README](https://github.com/SohamRoyNoel/DistanceTracker/tree/master/Server#to-setup-docker)
