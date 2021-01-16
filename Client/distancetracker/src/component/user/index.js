@@ -1,5 +1,8 @@
-function User() {
-    return <h1>Hello, User</h1>;
-}
+import React from 'react';
+import UserForm from './userComponent/userForm';
 
-export default User;
+export default function User() {
+  return (
+    <UserForm />
+  );
+}
