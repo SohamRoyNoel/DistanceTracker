@@ -46,21 +46,19 @@ exports.getConfirmationIfInRadius = asyncHandler(async (req, res, next) => {
         // User's Location
         const geoLocation = await geocoder.geocode(city);  
         const receivedLat = geoLocation[0].latitude;
-        const receivedLng = geoLocation[0].longitude;
+        const receivedLng = geoLocation[0].longitude;        
 
         const defaultLocation = await Location.findOne();
         if(!defaultLocation){
             return next(new ErrorResponse('Default Location is not set, Please contact admin team'));
         }
         const defaultLat = defaultLocation.location.coordinates[1];
-        const defaultLng = defaultLocation.location.coordinates[0];             
+        const defaultLng = defaultLocation.location.coordinates[0];  
+        
+        const d = distanceCalculator(defaultLat,defaultLng,receivedLat,receivedLng);
 
         // Calculate Distance
-        const distance = geolib.getPreciseDistance(
-            {latitude: receivedLat, longitude: receivedLng},
-            {latitude: defaultLat, longitude: defaultLng},
-            1
-        )/ 1000 < 100 ? 'Yes' : 'No';
+        const distance = d < 100 ? "Yes" : "No";
         
         res.status(200).json({
             success: true,
@@ -70,4 +68,17 @@ exports.getConfirmationIfInRadius = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Something went wrong please try again'));
     }
        
-})
+});
+
+function distanceCalculator(rLat, rLon2, dLat1, dLon2){
+    const R = 6371e3; // metres
+    const φ1 = rLat * Math.PI/180; // φ, λ in radians
+    const φ2 = dLat1 * Math.PI/180;
+    const Δφ = (dLat1-rLat) * Math.PI/180;
+    const Δλ = (dLon2-rLon2) * Math.PI/180;
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const d = R * c; // in metres
+
+    return d / 1000; // in km
+}
