@@ -2,8 +2,11 @@ import React from "react";
 import { Formik } from "formik";
 import apiDataReturner from "../loginQuery/login.axios";
 import Swal from 'sweetalert2';
+import jwt_decode from "jwt-decode";
+import { useHistory } from 'react-router-dom';
 
 export default function LoginForm() {
+  const history = useHistory();
   return (
     <div style={{ marginTop: '10%', marginLeft: '30%', marginRight: '30%' }} className="form-group container">
     <p className="font-weight-bold" style={{ fontSize: 45 }}>LogIn</p>
@@ -28,11 +31,19 @@ export default function LoginForm() {
                 "password": values.password
             };
             let data = apiDataReturner(body);
-            const promise = new Promise((resolve, reject) => { 
+            new Promise((resolve, reject) => { 
                    resolve(data); 
             }).then((value) => {
                 if(value !== undefined && value.data.success === true){
                     localStorage.setItem('_jid', value.data.token);
+                    const decoded = jwt_decode(value.data.token);
+                    if(decoded.role === "admin"){
+                      history.push('/admin');
+                    } else if (decoded.role === "user" || decoded.role === "admin") {
+                      history.push('/user');
+                    } else {
+                      history.push('/');
+                    }
                 } else {
                     Swal.fire('Oops...', 'Something went wrong!', 'error')
                 }
