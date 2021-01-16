@@ -6,5 +6,5 @@
 - Instruction is included inside each folder.
 
 - Distance calculation formula is taken from : 
-[a link](https://www.movable-type.co.uk/scripts/latlong.html)
+[Formula Source](https://www.movable-type.co.uk/scripts/latlong.html)
 

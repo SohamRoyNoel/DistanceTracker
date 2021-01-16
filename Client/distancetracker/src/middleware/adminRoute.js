@@ -8,13 +8,13 @@ export default function AdminRoute({ Component, ...rest }) {
             {...rest}
             render={(props)=>{
                 if(!localStorage.getItem('_jid')){
-                    window.location.href = "/";
+                    window.location.href = "/login";
                 } else {
                     const decoded = jwt_decode(localStorage.getItem('_jid'));
                     if(decoded.role === "admin"){
                         return <Component />;
                     } else {
-                        window.location.href = "/";
+                        window.location.href = "/login";
                     }                       
                 }
             }}

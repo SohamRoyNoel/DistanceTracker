@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import apiDataReturner from '../userQuery/user.axios';
 import Swal from 'sweetalert2';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   textPadding: {
@@ -15,6 +16,11 @@ const useStyles = makeStyles((theme) => ({
 export default function UserForm() {
   const classes = useStyles();
   const [disable, setDisable] = useState(false);
+  const history = useHistory();
+  const logOut = () => {
+      localStorage.removeItem("_jid");
+      history.push("/login");
+  };
   return (
     <Formik
     initialValues={{ location: "" }}
@@ -73,6 +79,10 @@ export default function UserForm() {
           <br />
           <button type="submit" className="btn btn-primary" disabled={disable}>
             Check Distance
+          </button>
+          &nbsp;
+          <button onClick={logOut} className="btn btn-danger" disabled={disable}>
+            LogOut
           </button>
         </form>
       );
