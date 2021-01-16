@@ -31,7 +31,6 @@ export default function LoginForm() {
             const promise = new Promise((resolve, reject) => { 
                    resolve(data); 
             }).then((value) => {
-                console.log(JSON.stringify(value));
                 if(value !== undefined && value.data.success === true){
                     localStorage.setItem('_jid', value.data.token);
                 } else {
